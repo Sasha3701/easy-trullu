@@ -1,5 +1,13 @@
+import { Header } from "./components/HeaderComponents";
+import { Main } from "./components/MainComponents";
+
 const App = () => {
-  return <div>App</div>;
+  return (
+    <>
+      <Header />
+      <Main />
+    </>
+  );
 };
 
 export default App;
