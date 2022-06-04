@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { cloneDeep } from "lodash";
+import { v4 } from "uuid";
 
-// const defaultStateGroup = {
-//   id: "",
-//   title: "",
-//   cards: [],
-// };
+const defaultStateGroup = {
+  id: "",
+  title: "",
+  cards: [],
+};
 
 const initialState = {
   groups: [],
@@ -13,9 +15,16 @@ const initialState = {
 export const groupsSlice = createSlice({
   name: "groups",
   initialState,
-  reducers: {},
+  reducers: {
+    addGroup: (state, payload) => {
+      const newGroup = cloneDeep(defaultStateGroup);
+      newGroup.id = v4();
+      newGroup.title = payload;
+      state.groups = [...cloneDeep(state.groups), newGroup];
+    }
+  },
 });
 
-export const { } = groupsSlice.actions;
+export const { addGroup } = groupsSlice.actions;
 
 export default groupsSlice.reducer;

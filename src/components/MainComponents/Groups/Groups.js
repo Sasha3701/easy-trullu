@@ -1,17 +1,21 @@
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { selectGroupsState } from "../../../store/selectors";
+import FormAddGroup from "../../FormAddGroup";
 
 const Groups = () => {
   const groups = useSelector(selectGroupsState);
 
   return (
     <SContainer>
-      <SListGroups>
-        {groups.map((group) => (
-          <SItemGroups key={group.id}>test</SItemGroups>
-        ))}
-      </SListGroups>
+      {groups.length ? (
+        <SListGroups>
+          {groups.map((group) => (
+            <SItemGroups key={group.id}>test</SItemGroups>
+          ))}
+        </SListGroups>
+      ) : null}
+      <FormAddGroup />
     </SContainer>
   );
 };

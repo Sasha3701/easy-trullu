@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { COLORS } from "../../styles/variables";
 
 const Button = ({
   children,
@@ -8,13 +9,17 @@ const Button = ({
   ...props
 }) => {
   switch (variant) {
+    case "add": {
+      return <SButtonAdd {...props}>{children}</SButtonAdd>;
+    }
+    case "icon": {
+      return <SButtonIcon {...props}>{children}</SButtonIcon>;
+    }
     default: {
       return (
         <SButtonDefault {...props}>
           {IconLeft ? <IconLeft /> : null}
-          <SWrapperText>
-            {children}
-          </SWrapperText>
+          <SWrapperText>{children}</SWrapperText>
           {IconRight ? <IconRight /> : null}
         </SButtonDefault>
       );
@@ -43,9 +48,31 @@ const SButtonDefault = styled(SButton)`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: ${(props) => (props.left ? "0 6px 0 0" : "0 0 0 6px")};
   &:hover {
     background-color: rgba(255, 255, 255, 0.3);
+  }
+`;
+
+const SButtonAdd = styled(SButton)`
+  min-width: 150px;
+  height: 30px;
+  color: white;
+  background-color: ${COLORS.green};
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: ${COLORS.greenLight};
+  }
+`;
+
+const SButtonIcon = styled(SButton)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  background-color: inherit;
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: ${COLORS.gray};
   }
 `;
 
