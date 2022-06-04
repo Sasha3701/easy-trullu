@@ -16,7 +16,7 @@ export const groupsSlice = createSlice({
   name: "groups",
   initialState,
   reducers: {
-    addGroup: (state, payload) => {
+    addGroup: (state, { payload }) => {
       const newGroup = cloneDeep(defaultStateGroup);
       newGroup.id = v4();
       newGroup.title = payload;

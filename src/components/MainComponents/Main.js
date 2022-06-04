@@ -25,6 +25,7 @@ const SContainer = styled.div`
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.5);
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  overflow-x: auto;
 `;
 
 export default Main;
