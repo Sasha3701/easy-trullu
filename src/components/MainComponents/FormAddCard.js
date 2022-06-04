@@ -1,14 +1,17 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
-import { CloseIcon } from "../images";
-import { Button, Input } from "./UI";
+import { addCard } from "../../store/groupSlice";
+import { useDispatch } from "react-redux";
+import { CloseIcon, PlusIcon } from "../../images";
+import { Button, Input } from "../UI";
 
-const FormAddCard = () => {
+const FormAddCard = ({ id }) => {
   const [error, setError] = useState(false);
   const [isForm, setIsForm] = useState(false);
   const [visibleButton, setVisibleButton] = useState(true);
   const [value, setValue] = useState("");
   const refInput = useRef(null);
+  const dispatch = useDispatch();
 
   const handleOpenForm = () => {
     setIsForm(true);
@@ -35,6 +38,7 @@ const FormAddCard = () => {
       setError(true);
       return;
     }
+    dispatch(addCard({ title: value, groupId: id }))
     setValue("");
     refInput.current.focus();
   };
@@ -62,7 +66,7 @@ const FormAddCard = () => {
         </SWrapperForm>
       </SContainer>
       {!isForm && visibleButton ? (
-        <Button onClick={handleOpenForm} variant="add">
+        <Button onClick={handleOpenForm} IconLeft={PlusIcon} isInherit variant="add">
           Добавить карточку
         </Button>
       ) : null}

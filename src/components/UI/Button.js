@@ -4,13 +4,20 @@ import { COLORS } from "../../styles/variables";
 const Button = ({
   children,
   variant = "default",
+  isInherit,
   IconLeft,
   IconRight,
   ...props
 }) => {
   switch (variant) {
     case "add": {
-      return <SButtonAdd {...props}>{children}</SButtonAdd>;
+      return (
+        <SButtonAdd isInherit={isInherit} {...props}>
+          {IconLeft ? <IconLeft /> : null}
+          <SWrapperText>{children}</SWrapperText>
+          {IconRight ? <IconRight /> : null}
+        </SButtonAdd>
+      );
     }
     case "icon": {
       return <SButtonIcon {...props}>{children}</SButtonIcon>;
@@ -56,11 +63,16 @@ const SButtonDefault = styled(SButton)`
 const SButtonAdd = styled(SButton)`
   min-width: 150px;
   height: 30px;
-  color: white;
-  background-color: ${COLORS.green};
+  color: ${({ isInherit }) => (isInherit ? "black" : "white")};
+  background-color: ${({ isInherit }) =>
+    isInherit ? "inherit" : COLORS.green};
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &:hover {
-    background-color: ${COLORS.greenLight};
+    background-color: ${({ isInherit }) =>
+      isInherit ? COLORS.gray : COLORS.greenLight};
   }
 `;
 

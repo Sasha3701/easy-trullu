@@ -1,25 +1,43 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { ThreeDotsIcon } from "../../../images";
-import FormAddCard from "../../FormAddCard";
+import FormAddCard from "../FormAddCard";
+import Cards from "../Cards/Cards";
 import { Button } from "../../UI";
+import { useState } from "react";
+
+const animGroupAdd = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+`;
+
+const animGroupRemove = keyframes`
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+`;
 
 const Group = ({ group: { id, title, cards } }) => {
+  const [isDeleted, setIsDeleted] = useState(false);
+
   return (
-    <SContainer>
+    <SContainer isDeleted={isDeleted}>
       <SHeader>
         <STitle>{title}</STitle>
         <Button variant="icon">
           <ThreeDotsIcon />
         </Button>
       </SHeader>
-      {cards.length ? (
-        <SListCards>
-          {cards.map((card) => (
-            <SItemCard></SItemCard>
-          ))}
-        </SListCards>
-      ) : null}
-      <FormAddCard />
+      <Cards groupId={id} cards={cards}/>
+      <FormAddCard id={id}/>
     </SContainer>
   );
 };
@@ -30,10 +48,6 @@ const STitle = styled.h2`
     text-overflow: ellipsis;
     width: 180px;
 `;
-
-const SListCards = styled.ul``;
-
-const SItemCard = styled.li``;
 
 const SHeader = styled.div`
   display: flex;
@@ -50,6 +64,7 @@ const SContainer = styled.div`
   padding: 10px;
   width: 250px;
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  animation: ${({ isDeleted }) => isDeleted ? animGroupRemove : animGroupAdd} 0.3s;
 `;
 
 export default Group;

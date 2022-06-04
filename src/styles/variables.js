@@ -11,4 +11,5 @@ export const COLORS = {
   gray: "#e8e8e8",
   grayDark: "#bababa",
   greenLight: "#47d147",
+  greenVeryLight: "#67f56e"
 };

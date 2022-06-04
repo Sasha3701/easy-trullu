@@ -1,18 +1,8 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { selectGroupsState } from "../../../store/selectors";
-import FormAddGroup from "../../FormAddGroup";
+import FormAddGroup from "../FormAddGroup";
 import Group from "./Group";
-
-const animGroup = keyframes`
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-`;
 
 const Groups = () => {
   const groups = useSelector(selectGroupsState);
@@ -44,7 +34,6 @@ const SListGroups = styled.ul`
 
 const SItemGroups = styled.li`
   margin-right: 10px;
-  animation: ${animGroup} 0.8s;
 `;
 
 export default Groups;

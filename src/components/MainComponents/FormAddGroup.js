@@ -1,10 +1,10 @@
 import { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { addGroup } from "../store/groupSlice";
-import { selectGroupsState } from "../store/selectors";
-import { PlusIcon, CloseIcon } from "../images";
-import { Button, Input } from "./UI";
+import { addGroup } from "../../store/groupSlice";
+import { selectGroupsState } from "../../store/selectors";
+import { PlusIcon, CloseIcon } from "../../images";
+import { Button, Input } from "../UI";
 
 const FormAddGroup = () => {
   const [error, setError] = useState(false);
@@ -14,6 +14,7 @@ const FormAddGroup = () => {
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
   const refInput = useRef(null);
+  const [isAnimation, setIsAnimation] = useState(true);
 
   const buttonText = useMemo(() => {
     return !groups.length ? "Добавить группу" : "Добавить еще группу";
@@ -22,22 +23,28 @@ const FormAddGroup = () => {
   const handleOpenForm = () => {
     setIsForm(true);
     setVisibleButton(false);
-    refInput.current.focus()
+    refInput.current.focus();
   };
 
-  const handleCloseForm = () => {
+  const handleCloseForm = (withoutTimout = false) => {
     setIsForm(false);
     setValue("");
     setError(false);
-    setTimeout(() => setVisibleButton(true), 300);
+
+    withoutTimout
+      ? setVisibleButton(true)
+      : setTimeout(() => {
+          setVisibleButton(true);
+        }, 300);
+    setTimeout(() => setIsAnimation(true), 100);
   };
 
   const handleChange = (e) => {
-    if(error) {
+    if (error) {
       setError(false);
     }
     setValue(e.target.value);
-  }
+  };
 
   const handleAddGroup = () => {
     if (!value) {
@@ -45,20 +52,27 @@ const FormAddGroup = () => {
       return;
     }
     dispatch(addGroup(value));
-    setValue("");
-    refInput.current.focus()
-  }
+    setIsAnimation(false);
+    handleCloseForm(true);
+  };
 
   return (
     <SWrapper>
-      <SContainer open={isForm}>
+      <SContainer open={isForm} isAnimation={isAnimation}>
         <SWrapperForm>
           <SWrapperInput>
-            <Input ref={refInput} value={value} notValid={error} onChange={handleChange}/>
+            <Input
+              ref={refInput}
+              value={value}
+              notValid={error}
+              onChange={handleChange}
+            />
           </SWrapperInput>
           <SContainerButtons>
-            <Button onClick={handleAddGroup} variant="add">Добавить группу</Button>
-            <Button onClick={handleCloseForm} variant="icon">
+            <Button onClick={handleAddGroup} variant="add">
+              Добавить группу
+            </Button>
+            <Button onClick={() => handleCloseForm(false)} variant="icon">
               <CloseIcon />
             </Button>
           </SContainerButtons>
@@ -94,7 +108,8 @@ const SWrapper = styled.div`
 const SContainer = styled.div`
   max-height: ${(props) => (props.open ? "100%" : 0)};
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: ${(props) =>
+    props.isAnimation ? "max-height 0.3s ease" : "none"};
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
 `;
 const SContainerButtons = styled.div`
