@@ -28,6 +28,9 @@ export const groupsSlice = createSlice({
       newGroup.title = payload;
       state.groups = [...cloneDeep(state.groups), newGroup];
     },
+    removeGroup: (state, { payload }) => {
+      state.groups = cloneDeep(state.groups).filter(({ id }) => id !== payload);
+    },
     addCard: (state, { payload }) => {
       const { title, groupId } = payload;
       const newCard = cloneDeep(defaultStateCard);
@@ -43,9 +46,14 @@ export const groupsSlice = createSlice({
         (card) => card.id !== id
       );
     },
+    removeAllCards: (state, { payload }) => {
+      const currentGroup = state.groups.find(({ id }) => id === payload);
+      currentGroup.cards = [];
+    },
   },
 });
 
-export const { addGroup, addCard, removeCard } = groupsSlice.actions;
+export const { addGroup, addCard, removeCard, removeGroup, removeAllCards } =
+  groupsSlice.actions;
 
 export default groupsSlice.reducer;

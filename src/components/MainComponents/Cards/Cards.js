@@ -1,9 +1,19 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Card from "./Card";
 
-const Cards = ({ cards, groupId }) => {
+const animCardsRemove = keyframes`
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+`;
+
+const Cards = ({ cards, groupId, isDeleted }) => {
   return cards.length ? (
-    <SContainer>
+    <SContainer isDeleted={isDeleted}>
       <SListCards>
         {cards.map((card) => (
           <SItemCard key={card.id}>
@@ -15,7 +25,10 @@ const Cards = ({ cards, groupId }) => {
   ) : null;
 };
 
-const SContainer = styled.div``;
+const SContainer = styled.div`
+  animation: ${({ isDeleted }) => (isDeleted ? animCardsRemove : 'none')}
+    0.3s;
+`;
 
 const SListCards = styled.ul`
   display: flex;

@@ -3,7 +3,8 @@ import { ThreeDotsIcon } from "../../../images";
 import FormAddCard from "../FormAddCard";
 import Cards from "../Cards/Cards";
 import { Button } from "../../UI";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import Menu from "../Menu";
 
 const animGroupAdd = keyframes`
   from {
@@ -27,26 +28,41 @@ const animGroupRemove = keyframes`
 
 const Group = ({ group: { id, title, cards } }) => {
   const [isDeleted, setIsDeleted] = useState(false);
+  const [isDeletedCards, setIsDeletedCards] = useState(false);
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
+  const handleChangeMenu = useCallback(() => {
+    setIsOpenMenu((prevState) => !prevState);
+  }, []);
 
   return (
     <SContainer isDeleted={isDeleted}>
       <SHeader>
         <STitle>{title}</STitle>
-        <Button variant="icon">
+        <Button onClick={handleChangeMenu} variant="icon">
           <ThreeDotsIcon />
         </Button>
       </SHeader>
-      <Cards groupId={id} cards={cards}/>
-      <FormAddCard id={id}/>
+      <Cards groupId={id} cards={cards} isDeleted={isDeletedCards} />
+      <FormAddCard id={id} />
+      {isOpenMenu ? (
+        <Menu
+          id={id}
+          cards={cards}
+          setIsDeleted={setIsDeleted}
+          setIsDeletedCards={setIsDeletedCards}
+          onChangeMenu={handleChangeMenu}
+        />
+      ) : null}
     </SContainer>
   );
 };
 
 const STitle = styled.h2`
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 180px;
 `;
 
 const SHeader = styled.div`
@@ -58,13 +74,15 @@ const SHeader = styled.div`
 
 const SContainer = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   border-radius: 6px;
   background-color: white;
   padding: 10px;
   width: 250px;
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
-  animation: ${({ isDeleted }) => isDeleted ? animGroupRemove : animGroupAdd} 0.3s;
+  animation: ${({ isDeleted }) => (isDeleted ? animGroupRemove : animGroupAdd)}
+    0.3s;
 `;
 
 export default Group;
