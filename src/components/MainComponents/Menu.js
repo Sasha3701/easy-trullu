@@ -1,11 +1,31 @@
 import { useMemo, memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button } from "../UI";
 import { removeAllCards, removeGroup } from "../../store/groupSlice";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const animMenuOpen = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+`;
+
+const animMenuClose = keyframes`
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+`;
 
 const Menu = memo(
-  ({ id, cards, setIsDeleted, setIsDeletedCards, onChangeMenu }) => {
+  ({ id, cards, setIsDeleted, setIsDeletedCards, onChangeMenu, isClosed }) => {
     const dispatch = useDispatch();
 
     const handleRemoveAllCards = () => {
@@ -42,7 +62,7 @@ const Menu = memo(
 
     return (
       <>
-        <SContainer>
+        <SContainer isClosed={isClosed}>
           <SListActions>
             {actions.map(({ id, title, action }) => (
               <SItemAction key={id}>
@@ -76,6 +96,8 @@ const SContainer = styled.div`
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
   padding: 10px;
   z-index: 100;
+  animation: ${({ isClosed }) => (isClosed ? animMenuClose: animMenuOpen)}
+    0.3s alternate;
 `;
 
 const SListActions = styled.ul`

@@ -30,10 +30,17 @@ const Group = ({ group: { id, title, cards } }) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const [isDeletedCards, setIsDeletedCards] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const [isClosedMenu, setIsClosedMenu] = useState(false);
 
   const handleChangeMenu = useCallback(() => {
-    setIsOpenMenu((prevState) => !prevState);
-  }, []);
+    if(isOpenMenu) {
+      setIsClosedMenu(true);
+      setTimeout(() => setIsOpenMenu((prevState) => !prevState), 300);
+      setTimeout(() => setIsClosedMenu(false), 300);
+    } else {
+      setIsOpenMenu((prevState) => !prevState);
+    }
+  }, [isOpenMenu]);
 
   return (
     <SContainer isDeleted={isDeleted}>
@@ -48,6 +55,7 @@ const Group = ({ group: { id, title, cards } }) => {
       {isOpenMenu ? (
         <Menu
           id={id}
+          isClosed={isClosedMenu}
           cards={cards}
           setIsDeleted={setIsDeleted}
           setIsDeletedCards={setIsDeletedCards}
