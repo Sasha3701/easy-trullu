@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { HEADER, COLORS } from "../../styles/variables";
 import Groups from "./Groups/Groups";
+import ModalCard from "./ModalCard";
 
 const Main = () => {
   return (
@@ -8,6 +9,7 @@ const Main = () => {
       <SContainer>
         <Groups />
       </SContainer>
+      <ModalCard />
     </SMain>
   );
 };

@@ -4,6 +4,7 @@ import { Button } from "../../UI";
 import { DeleteIcon } from "../../../images";
 import { useDispatch } from "react-redux";
 import { removeCard } from "../../../store/groupSlice";
+import { changeContentModal } from "../../../store/modalSlice";
 import { useState } from "react";
 
 const animCardAdd = keyframes`
@@ -30,13 +31,18 @@ const Card = ({ card, groupId }) => {
   const { title, id } = card;
   const dispatch = useDispatch();
   const [isDeleted, setIsDeleted] = useState(false);
+
   const handleRemoveCard = () => {
     setIsDeleted(true);
     setTimeout(() => dispatch(removeCard({ id, groupId })), 300);
   };
 
+  const handleOpenCard = () => {
+    dispatch(changeContentModal(card));
+  };
+
   return (
-    <SContainer isDeleted={isDeleted}>
+    <SContainer isDeleted={isDeleted} onClick={handleOpenCard}>
       <STitle>{title}</STitle>
       <SWrapperButton>
         <Button onClick={handleRemoveCard} variant="icon">
