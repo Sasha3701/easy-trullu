@@ -3,9 +3,11 @@ import { useSelector } from "react-redux";
 import { selectGroupsState } from "../../../store/selectors";
 import FormAddGroup from "../FormAddGroup";
 import Group from "./Group";
+import { useState } from "react";
 
 const Groups = () => {
   const groups = useSelector(selectGroupsState);
+  const [currentGroup, setCurrentGroup] = useState(null);
 
   return (
     <SContainer>
@@ -13,7 +15,11 @@ const Groups = () => {
         <SListGroups>
           {groups.map((group) => (
             <SItemGroups key={group.id}>
-              <Group group={group} />
+              <Group
+                group={group}
+                currentGroup={currentGroup}
+                setCurrentGroup={setCurrentGroup}
+              />
             </SItemGroups>
           ))}
         </SListGroups>

@@ -1,11 +1,17 @@
 import styled, { keyframes } from "styled-components";
+import { useRef, useState } from "react";
 import { COLORS } from "../../../styles/variables";
 import { Button } from "../../UI";
 import { DeleteIcon } from "../../../images";
-import { useDispatch } from "react-redux";
-import { removeCard } from "../../../store/groupSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  removeCard,
+  reorderCards,
+  saveCurrentCard,
+} from "../../../store/groupSlice";
 import { changeContentModal } from "../../../store/modalSlice";
-import { useState } from "react";
+import { selectGroupsCurrentCard } from "../../../store/selectors";
+import { cloneDeep } from "lodash";
 
 const animCardAdd = keyframes`
   from {
@@ -31,8 +37,11 @@ const Card = ({ card, groupId }) => {
   const { title, id } = card;
   const dispatch = useDispatch();
   const [isDeleted, setIsDeleted] = useState(false);
+  const refContainer = useRef(null);
+  const currentCard = useSelector(selectGroupsCurrentCard);
 
-  const handleRemoveCard = () => {
+  const handleRemoveCard = (e) => {
+    e.stopPropagation();
     setIsDeleted(true);
     setTimeout(() => dispatch(removeCard({ id, groupId })), 300);
   };
@@ -41,8 +50,48 @@ const Card = ({ card, groupId }) => {
     dispatch(changeContentModal(card));
   };
 
+  const handleDragStart = (e) => {
+    dispatch(saveCurrentCard({ groupId, ...card }));
+  };
+
+  const handleDragEnd = (e) => {
+    refContainer.current.style.opacity = "1";
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    refContainer.current.style.opacity = "0.5";
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    refContainer.current.style.opacity = "1";
+    if (currentCard.groupId !== groupId) {
+      return;
+    }
+    const cloneCard = cloneDeep(currentCard);
+    delete cloneCard.groupId;
+    dispatch(
+      reorderCards({
+        from: { card: cloneCard, groupId },
+        to: { card, groupId },
+      })
+    );
+  };
+
   return (
-    <SContainer isDeleted={isDeleted} onClick={handleOpenCard}>
+    <SContainer
+      isDeleted={isDeleted}
+      onClick={handleOpenCard}
+      draggable={true}
+      onDragStart={handleDragStart}
+      onDragLeave={handleDragEnd}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      ref={refContainer}
+    >
       <STitle>{title}</STitle>
       <SWrapperButton>
         <Button onClick={handleRemoveCard} variant="icon">

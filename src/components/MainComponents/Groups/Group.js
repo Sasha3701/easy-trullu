@@ -3,8 +3,11 @@ import { ThreeDotsIcon } from "../../../images";
 import FormAddCard from "../FormAddCard";
 import Cards from "../Cards/Cards";
 import { Button } from "../../UI";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { reorderGroups, replaceCardFromAnotherGroup } from "../../../store/groupSlice";
 import Menu from "../Menu";
+import { useDispatch, useSelector } from "react-redux";
+import { selectGroupsCurrentCard } from "../../../store/selectors";
 
 const animGroupAdd = keyframes`
   from {
@@ -26,14 +29,18 @@ const animGroupRemove = keyframes`
   }
 `;
 
-const Group = ({ group: { id, title, cards } }) => {
+const Group = ({ group, currentGroup, setCurrentGroup }) => {
+  const { id, title, cards } = group;
   const [isDeleted, setIsDeleted] = useState(false);
   const [isDeletedCards, setIsDeletedCards] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isClosedMenu, setIsClosedMenu] = useState(false);
+  const refContainer = useRef(null);
+  const dispatch = useDispatch();
+  const currentCard = useSelector(selectGroupsCurrentCard);
 
   const handleChangeMenu = useCallback(() => {
-    if(isOpenMenu) {
+    if (isOpenMenu) {
       setIsClosedMenu(true);
       setTimeout(() => setIsOpenMenu((prevState) => !prevState), 300);
       setTimeout(() => setIsClosedMenu(false), 300);
@@ -42,8 +49,49 @@ const Group = ({ group: { id, title, cards } }) => {
     }
   }, [isOpenMenu]);
 
+  const handleDragStart = (e) => {
+    setCurrentGroup(group);
+  };
+
+  const handleDragEnd = (e) => {
+    refContainer.current.style.opacity = '1';
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    if (currentCard?.groupId) {
+      return;
+    }
+    refContainer.current.style.opacity = '0.5';
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    refContainer.current.style.opacity = '1';
+    if (currentCard?.groupId) {
+      dispatch(
+        replaceCardFromAnotherGroup({
+          cardId: currentCard.id,
+          groupId: currentCard.groupId,
+          currentGroupId: id,
+        })
+      );
+      return;
+    }
+    dispatch(reorderGroups({ from: currentGroup, to: group }));
+  };
+
   return (
-    <SContainer isDeleted={isDeleted}>
+    <SContainer
+      isDeleted={isDeleted}
+      draggable={true}
+      onDragStart={handleDragStart}
+      onDragLeave={handleDragEnd}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      ref={refContainer}
+    >
       <SHeader>
         <STitle>{title}</STitle>
         <Button onClick={handleChangeMenu} variant="icon">
@@ -51,7 +99,7 @@ const Group = ({ group: { id, title, cards } }) => {
         </Button>
       </SHeader>
       <Cards groupId={id} cards={cards} isDeleted={isDeletedCards} />
-      <FormAddCard id={id} />
+      <FormAddCard groupId={id} />
       {isOpenMenu ? (
         <Menu
           id={id}
@@ -91,6 +139,7 @@ const SContainer = styled.div`
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
   animation: ${({ isDeleted }) => (isDeleted ? animGroupRemove : animGroupAdd)}
     0.3s;
+  cursor: pointer;
 `;
 
 export default Group;

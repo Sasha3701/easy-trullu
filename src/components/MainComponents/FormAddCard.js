@@ -5,10 +5,11 @@ import { useDispatch } from "react-redux";
 import { CloseIcon, PlusIcon } from "../../images";
 import { Button, Input } from "../UI";
 
-const FormAddCard = ({ id }) => {
+const FormAddCard = ({ groupId }) => {
   const [error, setError] = useState(false);
   const [isForm, setIsForm] = useState(false);
   const [visibleButton, setVisibleButton] = useState(true);
+  const [visibleForm, setVisibleForm] = useState(false);
   const [value, setValue] = useState("");
   const refInput = useRef(null);
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const FormAddCard = ({ id }) => {
   const handleOpenForm = () => {
     setIsForm(true);
     setVisibleButton(false);
+    setVisibleForm(true);
     refInput.current.focus();
   };
 
@@ -23,6 +25,7 @@ const FormAddCard = ({ id }) => {
     setIsForm(false);
     setValue("");
     setError(false);
+    setTimeout(() => setVisibleForm(false), 300);
     setTimeout(() => setVisibleButton(true), 300);
   };
 
@@ -38,7 +41,7 @@ const FormAddCard = ({ id }) => {
       setError(true);
       return;
     }
-    dispatch(addCard({ title: value, groupId: id }))
+    dispatch(addCard({ title: value, groupId }));
     setValue("");
     refInput.current.focus();
   };
@@ -46,7 +49,7 @@ const FormAddCard = ({ id }) => {
   return (
     <SWrapper>
       <SContainer open={isForm}>
-        <SWrapperForm>
+        <SWrapperForm visibleForm={visibleForm}>
           <SWrapperInput>
             <Input
               ref={refInput}
@@ -66,7 +69,12 @@ const FormAddCard = ({ id }) => {
         </SWrapperForm>
       </SContainer>
       {!isForm && visibleButton ? (
-        <Button onClick={handleOpenForm} IconLeft={PlusIcon} isInherit variant="add">
+        <Button
+          onClick={handleOpenForm}
+          IconLeft={PlusIcon}
+          isInherit
+          variant="add"
+        >
           Добавить карточку
         </Button>
       ) : null}
@@ -79,11 +87,11 @@ const SWrapperInput = styled.div`
 `;
 
 const SWrapperForm = styled.div`
-  display: flex;
   flex-direction: column;
   background-color: #67f56e;
   border-radius: 6px;
   padding: 10px;
+  display: ${props => props.visibleForm ? "flex" : "none"};
 `;
 
 const SWrapper = styled.div`

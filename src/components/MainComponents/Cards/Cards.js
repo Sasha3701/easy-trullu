@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import Card from "./Card";
 
@@ -26,8 +27,7 @@ const Cards = ({ cards, groupId, isDeleted }) => {
 };
 
 const SContainer = styled.div`
-  animation: ${({ isDeleted }) => (isDeleted ? animCardsRemove : 'none')}
-    0.3s;
+  animation: ${({ isDeleted }) => (isDeleted ? animCardsRemove : "none")} 0.3s;
 `;
 
 const SListCards = styled.ul`
