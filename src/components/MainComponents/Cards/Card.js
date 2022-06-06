@@ -47,7 +47,7 @@ const Card = ({ card, groupId }) => {
   };
 
   const handleOpenCard = () => {
-    dispatch(changeContentModal(card));
+    dispatch(changeContentModal({ groupId, ...card }));
   };
 
   const handleDragStart = (e) => {

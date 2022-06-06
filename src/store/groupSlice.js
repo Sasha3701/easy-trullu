@@ -68,6 +68,18 @@ export const groupsSlice = createSlice({
       currentGroup.cards.push(newCard);
       state.currentCard = null;
     },
+    renameCard: (state, { payload }) => {
+      const { cardId, groupId, newTitle } = payload;
+      const currentGroup = state.groups.find(({ id }) => id === groupId);
+      const currentCard = currentGroup.cards.find(({ id }) => id === cardId);
+      currentCard.title = newTitle;
+    },
+    changeDescriptionCard: (state, { payload }) => {
+      const { cardId, groupId, newDescription } = payload;
+      const currentGroup = state.groups.find(({ id }) => id === groupId);
+      const currentCard = currentGroup.cards.find(({ id }) => id === cardId);
+      currentCard.description = newDescription;
+    },
     removeCard: (state, { payload }) => {
       const { id, groupId } = payload;
       const currentGroup = state.groups.find(({ id }) => id === groupId);
@@ -115,6 +127,8 @@ export const {
   reorderGroups,
   reorderCards,
   saveCurrentCard,
+  renameCard,
+  changeDescriptionCard,
 } = groupsSlice.actions;
 
 export default groupsSlice.reducer;
