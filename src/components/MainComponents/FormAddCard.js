@@ -18,7 +18,7 @@ const FormAddCard = ({ groupId }) => {
     setIsForm(true);
     setVisibleButton(false);
     setVisibleForm(true);
-    refInput.current.focus();
+    setTimeout(() => refInput.current.focus(), 300);
   };
 
   const handleCloseForm = () => {

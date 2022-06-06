@@ -30,6 +30,7 @@ const animModalClose = keyframes`
 
 const ModalCard = () => {
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState(false);
   const status = useSelector(selectModalStatus);
   const card = useSelector(selectModalCard);
   const [valueInput, setValueInput] = useState(() => card.title);
@@ -43,6 +44,12 @@ const ModalCard = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
+    if(!value) {
+      setValueInput(value);
+      setError(true);
+      return;
+    }
+    setError(false);
     setValueInput(value);
     dispatch(renameCard({ cardId: card.id, groupId: card.groupId, newTitle: value }));
   };
@@ -71,6 +78,7 @@ const ModalCard = () => {
             <SHeader>
               <TaskIcon />
               <SInput
+                notValid={error}
                 variant="title"
                 value={valueInput}
                 onChange={handleChange}
@@ -80,6 +88,7 @@ const ModalCard = () => {
               <SWrapperDiscription>
                 <SDescriptionIcon />
                 <Textarea
+                  placeholder="Добавить описание..."
                   label="Описание"
                   id={`card_descrition_${card.id}`}
                   value={valueTextarea}
@@ -128,7 +137,7 @@ const SInput = styled(Input)`
   font-size: 24px;
   font-weight: bold;
   margin-left: 10px;
-  width: 600px;
+  width: calc(100% - 100px);
 `;
 
 const SWrapperButton = styled.div`
@@ -166,6 +175,11 @@ const SContainer = styled.div`
   height: 800px;
   display: flex;
   flex-direction: column;
+  @media (max-width: 768px) {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
 `;
 
 export default ModalCard;

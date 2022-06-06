@@ -34,7 +34,7 @@ const SInputTitle = styled(SInput)`
     width: max-content;
     height: 40px;
     border-radius: 6px;
-    border: 1px solid white;
+    border: 1px solid ${props => props.notValid ? 'red' : 'white'};
     &:hover {
       border: 1px solid ${COLORS.gray};
     }

@@ -31,15 +31,25 @@ const Groups = () => {
 
 const SContainer = styled.div`
   display: flex;
+  @media (max-width: 375px) {
+    flex-direction: column;
+  }
 `;
 
 const SListGroups = styled.ul`
   display: flex;
   list-style: none;
+  @media (max-width: 375px) {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
 `;
 
 const SItemGroups = styled.li`
   margin-right: 10px;
+  @media (max-width: 375px) {
+    margin-bottom: 10px;
+  }
 `;
 
 export default Groups;
