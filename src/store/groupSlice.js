@@ -113,6 +113,9 @@ export const groupsSlice = createSlice({
     },
     saveCurrentCard: (state, { payload }) => {
       state.currentCard = payload;
+    },
+    clearAllGroups: (state) => {
+      state.groups= [];
     }
   },
 });
@@ -129,6 +132,7 @@ export const {
   saveCurrentCard,
   renameCard,
   changeDescriptionCard,
+  clearAllGroups,
 } = groupsSlice.actions;
 
 export default groupsSlice.reducer;
